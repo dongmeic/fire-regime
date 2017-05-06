@@ -4,7 +4,7 @@
 Year=$1
 
 DATADIR=/home2/dongmeic/fire/data/MCD64A1
-OUTPUTDIR=/home2/dongmeic/fire/output
+OUTPUTDIR=/home2/dongmeic/fire/output/BA_China
 DoY_month=("001" "032" "061" "092" "122" "153" "183" "214" "245" "275" "306" "336") 	
 Tiles=("h22v03" "h22v04" "h23v03" "h23v04" "h23v05" "h24v03" "h24v04" "h24v05" "h24v06" "h24v07" "h25v03" "h25v04" "h25v05" "h25v06" "h25v07" "h26v03" "h26v04" "h26v05" "h26v06" "h26v07" "h27v04" "h27v05" "h27v06" "h27v07" "h28v04" "h28v05" "h28v06" "h28v07" "h29v05" "h29v06" "h29v07")
 
@@ -19,7 +19,7 @@ do
 	Files=()
 	for tile in `seq 0 $NumberOfTiles`
     	do
-		Files+=("`ls $DATADIR/${Tiles[$tile]}/MCD64A1.A$Year${DoY_month[$DoY]}.${Tiles[$tile]}.051.?????????????.hdf`")
+		Files+=("`ls $DATADIR/${Tiles[$tile]}/MCD64A1.A$Year${DoY_month[$DoY]}.${Tiles[$tile]}.006.?????????????.hdf`")
 
 	done
 
