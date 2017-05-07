@@ -16,8 +16,10 @@ clear; close all; clc;
 % NODATA_LANDCOVER =  -128;
 
 years = 2001:2013
-basename = '/home2/dongmeic/fire/data/LC_China/';
-outputfolder = '/home2/dongmeic/fire/output/LC_China/';
+%basename = '/home2/dongmeic/fire/data/LC_China/';
+%outputfolder = '/home2/dongmeic/fire/output/LC_China/';
+basename = '/Volumes/dongmeic/fire/output/revision/LC_China/';
+outputfolder = '/Volumes/dongmeic/fire/output/LC_China/';
 
 % Make the output dir if it does not exist.
 if ~exist(outputfolder)
