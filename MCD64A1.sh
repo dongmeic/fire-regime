@@ -3,17 +3,10 @@
 # These are the inputs
 Year=$1
 
-<<<<<<< HEAD:MCD64A1_loc.sh
-DATADIR=/Volumes/dongmeic-22/fire/raw/MCD64A1
-OUTPUT_BASE=/Volumes/dongmeic-22/fire/output/revision/BA_China/cmg
+DATADIR=/home2/dongmeic/fire/data/MCD64A1
+OUTPUT_BASE=/home2/dongmeic/fire/output/BA_China
 
 OUTPUTDIR="$OUTPUT_BASE/$Year"
-=======
-DATADIR=/home2/dongmeic/fire/data/MCD64A1
-OUTPUTDIR=/home2/dongmeic/fire/output/BA_China
-DoY_month=("001" "032" "061" "092" "122" "153" "183" "214" "245" "275" "306" "336") 	
-Tiles=("h22v03" "h22v04" "h23v03" "h23v04" "h23v05" "h24v03" "h24v04" "h24v05" "h24v06" "h24v07" "h25v03" "h25v04" "h25v05" "h25v06" "h25v07" "h26v03" "h26v04" "h26v05" "h26v06" "h26v07" "h27v04" "h27v05" "h27v06" "h27v07" "h28v04" "h28v05" "h28v06" "h28v07" "h29v05" "h29v06" "h29v07")
->>>>>>> origin/master:MCD64A1_2.sh
 
 if ! [ -d "$OUTPUTDIR" ]; then
 	mkdir $OUTPUTDIR
@@ -40,7 +33,7 @@ fi
 
 # for each month
 themonth=()
-for DoY in `seq 0 11`
+for DoY in `seq 0 11` # bug: the loop did not run through？only one month created
 do
 	# for each tile
 	NumberOfTiles=`echo ${#Tiles[@]} - 1 | bc -l`
@@ -67,7 +60,7 @@ do
 	# mosaic to create a map of china
 	outputfile=$OUTPUTDIR/tmp.BA_China_$Year_${DoY_month[$DoY]}.tif
 		
-	gdal_merge.py  -of GTiff -o $outputfile ${layer_files[@]}
+	/packages/gdal/2.1.3/bin/gdal_merge.py  -of GTiff -o $outputfile ${layer_files[@]}
 
 	# reproject from sinosuidal to wgs84 latlong
 	themonth=`echo ${DoY} + 1 | bc`

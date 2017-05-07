@@ -1,26 +1,20 @@
 close all; clear; clc;
 
-%%% percent_landcover_affected.m : calculate forested area affected by fire
+%%% percentage_landcover_affected_m.m : calculate percentage landcover affected by fire based on monthly active fire data
 %% Input : monthly burnt area maps; yearly landcover reclassfied maps
 %% Output: 0.5 degree percentage landcover affected by fire
 %% Description: 
-%% Created by: Dongmei CHEN
+%% Created by: Dongmei CHEN, 2017.05.05
 
 tic
 
 years = 2001:2013;
 months = 1:12;
-<<<<<<< HEAD
-baseDir_BA   = '/Volumes/dongmeic/fire/output/revision/BA_China/';
-baseDir_LC   = '/Volumes/dongmeic/fire/output/LC_China/';
-outputFolder = '/Volumes/dongmeic/fire/output/revision/results/';
-=======
-baseDir_BA   = '/home2/dongmeic/fire/output/BA_China/';
+baseDir_AF   = '/home2/dongmeic/fire/output/BA_China/';
 baseDir_LC   = '/home2/dongmeic/fire/output/LC_China/';
 outputFolder = '/home2/dongmeic/fire/output/results/';
->>>>>>> origin/master
-
-[ROI ref] = geotiffread([baseDir_BA 'mask.tif']);
+%% Nodata = 32767;
+[ROI ref] = geotiffread([baseDir_AF 'mask.tif']);
 [m n] = size(ROI);
 
 
@@ -43,7 +37,8 @@ lcover_yearly = zeros(1, 4, m, n);
 for y=years 
   for v=months
     fprintf('Processing the %d year %d month!\n', y, v);
-    burntArea = geotiffread([baseDir_BA 'BA_China_' num2str(y) '-' num2str(v) '.tif']);
+    burntArea = geotiffread([baseDir_AF 'BA_China_' num2str(y) '-' num2str(v) '.tif']);
+    %% burntArea(burntArea == Nodata) = 0; 
     landCover = geotiffread([baseDir_LC 'LC_China_recl_' num2str(y) '.tif']);
 
     for jj = 1:nn
@@ -67,12 +62,10 @@ toc
 
 tic
 %% Find most affected landcover type
-pctf = zeros(mm, nn);
-pctsh = zeros(mm, nn);
-pctsa = zeros(mm, nn);
-pctg = zeros(mm, nn);
-pctc = zeros(mm, nn);
-pctmax = zeros(mm, nn);
+pctf = -ones(mm, nn);
+pctsa = -ones(mm, nn);
+pctg = -ones(mm, nn);
+pctc = -ones(mm, nn); 
 for jj = 1:nn
   for ii = 1:mm
     i = xIndex(:, ii);
@@ -88,11 +81,6 @@ for jj = 1:nn
       pctsa(ii, jj) = savanna;
       pctg(ii, jj) = grassland;
       pctc(ii, jj) = cropland;
-<<<<<<< HEAD
-      pctmax(ii, jj) = max(forest, savanna, grassland, cropland);
-=======
-      pctmax(ii, jj) = max([forest, savanna, grassland, cropland]);
->>>>>>> origin/master
     end
   end
 end
@@ -106,17 +94,15 @@ fprintf('Start writing output!\n');
 % pctg = uint16(pctg);
 % pctc = uint16(pctc);
 
-filename1 = [outputFolder 'percentage_forest_affected.tif'];
-filename2 = [outputFolder 'percentage_savanna_affected.tif'];
-filename3 = [outputFolder 'percentage_grassland_affected.tif'];
-filename4 = [outputFolder 'percentage_cropland_affected.tif'];
-filename5 = [outputFolder 'percentage_landcover_affected_mostly.tif'];
+filename1 = [outputFolder 'percentage_forest_affected_BA.tif'];
+filename2 = [outputFolder 'percentage_savanna_affected_BA.tif'];
+filename3 = [outputFolder 'percentage_grassland_affected_BA.tif'];
+filename4 = [outputFolder 'percentage_cropland_affected_BA.tif'];
 
 geotiffwrite(filename1, pctf, outputref);
 geotiffwrite(filename2, pctsa, outputref);
 geotiffwrite(filename3, pctg, outputref);
 geotiffwrite(filename4, pctc, outputref);
-geotiffwrite(filename5, pctmax, outputref);
 
 toc
 
