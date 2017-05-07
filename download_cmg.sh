@@ -1,0 +1,1 @@
+scp -r /Volumes/fuoco.geog.umd.edu-2/modis/C5/cmg/8day/hdf dongmeic@aciss.uoregon.edu:/home2/dongmeic/fire/data/cmg/C5/
