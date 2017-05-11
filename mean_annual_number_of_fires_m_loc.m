@@ -11,14 +11,14 @@ tic
 
 cutoff = 8;
 
-years = 2001:2016;
+years = 2001:2002;
 months = 1:12;
 
-basedir = '/Users/dongmeichen/BA_China/';
-outputfolder = '/Users/dongmeichen/output/results/';
+basedir = '/Volumes/dongmeichen/output/BA_China/';
+outputfolder = '/Volumes/dongmeichen/output/results/';
 
 %% Region of Interest
-[ROI ref] = geotiffread('/Users/dongmeichen/masknew.tif');
+[ROI ref] = geotiffread('/Volumes/dongmeichen/masknew.tif');
 [m n] = size(ROI);
 
 
@@ -71,7 +71,7 @@ for idx = 1:length(years)
           for kk = 1:8
 	    ii = i + neighbor(kk, 1);
 	    jj = j + neighbor(kk, 2);
-	    if (map(ii, jj) > 0) && ROI(ii,jj) == 1
+	    if (ii>0 && jj>0 && ii<=m && jj <=n) && (map(ii, jj) > 0) && ROI(ii,jj) == 1
 	      %% Be careful the type of map is uint16. Should turn it to double. See class(map);
 	      if (abs(double(map(i, j)) - double(map(ii, jj))) <= cutoff) && (fires(ii, jj) == 0)
 	        fires(ii, jj) = fires(i, j);
