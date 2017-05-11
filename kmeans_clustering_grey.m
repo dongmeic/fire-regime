@@ -2,7 +2,7 @@ close all; clear; clc;
 
 tic
 
-savemyresults = true;
+savemyresults = false;
 
 %%% kmeans_clustering.m : clustering by applying kmeans
 %% Input: spatial,temporal and intensity attributes of fire regimes
@@ -332,7 +332,7 @@ end
 %see how the classes partitioned by kmeans are spatially distributed
 myind = find( ind );
 
-use_color_image = 1;
+use_color_image = 0;
 switch use_color_image
 	case 0
 		% grayscale image

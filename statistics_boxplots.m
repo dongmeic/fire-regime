@@ -14,18 +14,18 @@ basedir = '/Volumes/dongmeic/fire/output/revision/results/';
 %% File names.
 filenames = {
 	     'mean_annual_number_of_fires.tif'; 
-	     'mean_annual_number_of_fires_cv.tif'; 
          	    %'mean_annual_area_burned.tif'; 
 	     %'mean_annual_area_burned_cv.tif'; 
                       %'maximum_fire_size.tif';
-               'mean_annual_active_fire.tif'; 
+          'mean_annual_active_fire.tif';
+          'mean_annual_number_of_fires_cv.tif'; 
 	     'mean_annual_active_fire_cv.tif'; 
-             'fire_radiative_power.tif'; 
 	     'fire_season_duration.tif'; 
          %'length_of_fire_period.tif';
          %'length_of_fire_period_BA.tif';
              %'peak_start.tif'; 
-             'peak_month.tif'; 
+             'peak_month.tif';
+             'fire_radiative_power.tif'; 
               'Gini_index.tif';
 	     'percentage_forest_affected.tif';
 	     'percentage_savanna_affected.tif';
@@ -39,17 +39,17 @@ filenames = {
 
 file_name = {
 	     'mean annual number of fires';
-	     'CV of annual number of fires';
          %'mean annual burned area';
 	     %'CV of annual burned area';
                 %'maximum fire size';
           'mean annual active fire';
+         'CV of annual number of fires';
 	     'CV of annual active fire';
-         'fire radiative power';
 	     'fire season duration';
          %'length of fire period';
 		     %'peak start';
          'peak month';
+         'fire radiative power';
          	     'Gini index';
 	     'percentage forest affected';
 	     'percentage savanna affected';
@@ -57,6 +57,7 @@ file_name = {
 	     'percentage cropland affected';	     
 };
 
+labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
 
 [map ref] = geotiffread([basedir filenames{1}]);
 [m n] = size(map);
@@ -76,7 +77,7 @@ for k = 1:len
   map = geotiffread([basedir filenames{k}]);
   map2=double(map);
   subplot(3,4,k,'replace');
-  boxplot(map2(map2 > 0),'labels',k);
+  boxplot(map2(map2 > 0),'labels',[num2str(k) '-' labels{k}]);
 end
 print([basedir 'clusters/boxplot_variables_' date '.png'],'-dpng','-r500')
 
