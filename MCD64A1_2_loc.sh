@@ -5,7 +5,7 @@ Year=$1
 
 DATADIR=/Volumes/dongmeichen/MCD64A1
 OUTPUTDIR=/Volumes/dongmeichen/output/BA_China
-DoY_month=("001" "032" "060" "091" "121" "152" "182" "213" "244" "274" "305" "335") 	
+DoY_month=("001" "032" "061" "092" "122" "153" "183" "214" "245" "275" "306" "336") 	
 Tiles=("h22v03" "h22v04" "h23v03" "h23v04" "h23v05" "h24v03" "h24v04" "h24v05" "h24v06" "h24v07" "h25v03" "h25v04" "h25v05" "h25v06" "h25v07" "h26v03" "h26v04" "h26v05" "h26v06" "h26v07" "h27v04" "h27v05" "h27v06" "h27v07" "h28v04" "h28v05" "h28v06" "h28v07" "h29v05" "h29v06" "h29v07")
 
 
@@ -46,7 +46,7 @@ do
 
 	finaloutputfile=$OUTPUTDIR/BA_China_$Year-$themonth.tif
 	gdalwarp -t_srs "+proj=latlong +datum=WGS84" -te 73 17.5 135.5 54 -tr 0.005 0.005 $outputfile $finaloutputfile
-	
+
 	rm $OUTPUTDIR/*tmp*
 
 done
