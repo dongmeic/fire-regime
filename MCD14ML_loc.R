@@ -3,7 +3,7 @@ library(maptools)
 
 path <- "/Volumes/dongmeichen/mcd14ml/"
 out <- "/Volumes/dongmeichen/output/AF_China/"
-mask <- raster("/Volumes/dongmeichen/mask_new.tif")
+mask <- raster("/Volumes/dongmeichen/masknew.tif")
 # chinabd <- readShapePoly("/Volumes/dongmeichen/boundarynew.shp")
 # proj4string(chinabd) <- crs
 

@@ -18,8 +18,8 @@ clear; close all; clc;
 years = 2001:2013
 %basename = '/home2/dongmeic/fire/data/LC_China/';
 %outputfolder = '/home2/dongmeic/fire/output/LC_China/';
-basename = '/Volumes/dongmeic/fire/output/revision/LC_China/';
-outputfolder = '/Volumes/dongmeic/fire/output/LC_China/';
+baseDir_LC  = '/Volumes/dongmeichen/output/LC_China/';
+outputfolder = '/Volumes/dongmeichen/output/LC_China/reclass/';
 
 % Make the output dir if it does not exist.
 if ~exist(outputfolder)
@@ -28,7 +28,7 @@ end
 
 for y=years
   %% Process the image in every year.
-  filename = [basename 'LC_China_' num2str(y) '.tif'];
+  filename = [baseDir_LC 'LC_China_' num2str(y) '.tif'];
   [landcover ref] = geotiffread(filename);
   output = landcover;
 

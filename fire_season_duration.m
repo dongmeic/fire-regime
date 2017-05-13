@@ -10,14 +10,30 @@ tic
 %% from the previous output (e.g., burned area, number of fires) and the boxplot of data is not clear
 
 
-basedir = '/home2/dongmeic/fire/output/BA_China/';
-outputfolder = '/home2/dongmeic/fire/output/results/';
+% working in different computers without having to manually change the paths
+if isequal( getenv('UserName') , 'Andrea' )
+  basedir = '';
+  basedir2 = '';
+  outputfolder = 'results/';
+else
+  [~,computer_name]=system('hostname');
+  if length(computer_name)>=20 && isequal( computer_name(1:20), 'd136-228.uoregon.edu' )
+    basedir = '/Volumes/dongmeichen/output/BA_China/';
+    basedir2 = '/Volumes/dongmeichen/';
+    outputfolder = '/Volumes/dongmeichen/output/results/';
+  else
+    basedir = '/home2/dongmeic/fire/output/BA_China/';
+    basedir2 = '/home2/dongmeic/fire/';
+    outputfolder = '/home2/dongmeic/fire/output/results/';
+  end
+end
 
 years = 2001:2016;
 months = 1:12;
 
 %% Region of Interest
-[ROI ref] = geotiffread([basedir 'mask.tif']);
+[ROI ref] = geotiffread([basedir2 'masknew.tif']);
+ROI( ROI < 0 ) = 0;
 [m n] = size(ROI);
 
 xIndex = [[1:100:m]; [1:100:m]+99];
@@ -39,20 +55,22 @@ for y=years
     map = geotiffread([basedir 'BA_China_' num2str(y) '-' num2str(v) '.tif']);
     for jj = 1:nn
       for ii = 1:mm
-        i = xIndex(:, ii);
-        j = yIndex(:, jj);
-        dayshist= zeros(1, 366);
-        map_grid = map(i(1):i(2), j(1):j(2));
-        ROI_grid = ROI(i(1):i(2), j(1):j(2));
-        [I J] = find((map_grid > 0) & ROI_grid);
-        len = length(I);
-        for k = 1:len
-          a = I(k);
-          b = J(k);
-          day = map_grid(a, b);
-          dayshist(day) = dayshist(day) + 1;
+          if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
+            i = xIndex(:, ii);
+            j = yIndex(:, jj);
+            dayshist= zeros(1, 366);
+            map_grid = map(i(1):i(2), j(1):j(2));
+            ROI_grid = ROI(i(1):i(2), j(1):j(2));
+            [I J] = find((map_grid > 0) & ROI_grid);
+            len = length(I);
+            for k = 1:len
+              a = I(k);
+              b = J(k);
+              day = map_grid(a, b);
+              dayshist(day) = dayshist(day) + 1;
+            end
+            dayshist_all(:, :, ii, jj) = dayshist_all(:, :, ii, jj) + dayshist; 
         end
-        dayshist_all(:, :, ii, jj) = dayshist_all(:, :, ii, jj) + dayshist; 
       end
     end
   end

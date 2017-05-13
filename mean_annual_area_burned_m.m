@@ -6,16 +6,35 @@ close all; clear; clc;
 %% Output: 0.5 degree mean annual burn area map
 %% Description:
 %% Created by: Dongmei CHEN, 2017.05.05
+%% Updated on 2017.05.10
 
-basedir = '/home2/dongmeic/fire/output/BA_China/';
-outputfolder = '/home2/dongmeic/fire/output/results/';
+
+% working in different computers without having to manually change the paths
+if isequal( getenv('UserName') , 'Andrea' )
+  basedir = '';
+  basedir2 = '';
+  outputfolder = 'results/';
+else
+  [~,computer_name]=system('hostname');
+  if length(computer_name)>=20 && isequal( computer_name(1:20), 'd136-228.uoregon.edu' )
+    basedir = '/Volumes/dongmeichen/output/BA_China/';
+    basedir2 = '/Volumes/dongmeichen/';
+    outputfolder = '/Volumes/dongmeichen/output/results/';
+  else
+    basedir = '/home2/dongmeic/fire/output/BA_China/';
+    basedir2 = '/home2/dongmeic/fire/';
+    outputfolder = '/home2/dongmeic/fire/output/results/';
+  end
+end
+
 %% Nodata = 32767;
 
 years = 2001:2016;
 months = 1:12;
 
 %% Map size and reference system
-[ROI ref] = geotiffread([basedir 'mask.tif']);
+[ROI ref] = geotiffread([basedir2 'masknew.tif']);
+ROI( ROI < 0 ) = 0;
 [m n] = size(ROI);
 
 xIndex = [[1:100:m]; [1:100:m]+99];
@@ -49,16 +68,18 @@ for idx = 1:length(years)
     %% map(map == Nodata) = 0; 
     for jj = 1:nn
       for ii = 1:mm
-        i = xIndex(:, ii);
-        j = yIndex(:, jj);
-        map_grid = map(i(1):i(2), j(1):j(2));
-        ROI_grid = ROI(i(1):i(2), j(1):j(2));
-        map_grid(ROI_grid == 0) = 0;
-        if sum(sum(map_grid > 0))>0
-            burnPixel_m(ii, jj, jdx) = sum(sum(map_grid > 0));
+        if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
+          i = xIndex(:, ii);
+          j = yIndex(:, jj);
+          map_grid = map(i(1):i(2), j(1):j(2));
+          ROI_grid = ROI(i(1):i(2), j(1):j(2));
+          map_grid(ROI_grid == 0) = 0;
+          if sum(sum(map_grid > 0))>0
+              burnPixel_m(ii, jj, jdx) = sum(sum(map_grid > 0));
+          end
+          % gridSize_m(ii, jj, jdx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
+          gridSize(ii, jj, idx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
         end
-        % gridSize_m(ii, jj, jdx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
-        gridSize(ii, jj, idx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
       end
     end
   end

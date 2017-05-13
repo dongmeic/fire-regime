@@ -14,11 +14,29 @@ cutoff = 8;
 years = 2001:2002;
 months = 1:12;
 
-basedir = '/Volumes/dongmeichen/output/BA_China/';
-outputfolder = '/Volumes/dongmeichen/output/results/';
+% 2017-05-11 Andrea: use this if command in order to make the script
+% working also on my computer without having to manually change it
+if isequal( getenv('UserName') , 'Andrea' )
+	basedir = '';
+	basedir2 = '';
+	outputfolder = 'results/';
+else
+	[~,computer_name]=system('hostname');
+	if length(computer_name)>=20 && isequal( computer_name(1:20), 'd136-228.uoregon.edu' )
+		basedir = '/Volumes/dongmeichen/output/BA_China/';
+		basedir2 = '/Volumes/dongmeichen/';
+		outputfolder = '/Volumes/dongmeichen/output/results/';
+    else
+        basedir = '/home2/dongmeic/fire/output/BA_China/';
+        basedir2 = '/home2/dongmeic/fire/';
+        outputfolder = '/home2/dongmeic/fire/output/results/';
+	end
+end
+
 
 %% Region of Interest
-[ROI ref] = geotiffread('/Volumes/dongmeichen/masknew.tif');
+[ROI ref] = geotiffread([basedir2 'masknew.tif']);
+ROI( ROI < 0 ) = 0;
 [m n] = size(ROI);
 
 

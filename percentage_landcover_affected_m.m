@@ -10,11 +10,30 @@ tic
 
 years = 2001:2013;
 months = 1:12;
-baseDir_AF   = '/home2/dongmeic/fire/output/AF_China/';
-baseDir_LC   = '/home2/dongmeic/fire/output/LC_China/';
-outputFolder = '/home2/dongmeic/fire/output/results/';
+
+% working in different computers without having to manually change the paths
+if isequal( getenv('UserName') , 'Andrea' )
+  basedir = '';
+  basedir2 = '';
+  outputfolder = 'results/';
+else
+  [~,computer_name]=system('hostname');
+  if length(computer_name)>=20 && isequal( computer_name(1:20), 'd136-228.uoregon.edu' )
+    baseDir_AF = '/Volumes/dongmeichen/output/AF_China/';
+    baseDir_LC = '/Volumes/dongmeichen/output/LC_China/reclass/';
+    basedir2 = '/Volumes/dongmeichen/';
+    outputfolder = '/Volumes/dongmeichen/output/results/';
+  else
+    baseDir_AF  = '/home2/dongmeic/fire/output/AF_China/';
+    baseDir_LC  = '/home2/dongmeic/fire/output/LC_China/';
+    basedir2 = '/home2/dongmeic/fire/';
+    outputfolder = '/home2/dongmeic/fire/output/results/';
+  end
+end
+
 %% Nodata = 32767;
-[ROI ref] = geotiffread([baseDir_AF 'mask.tif']);
+[ROI ref] = geotiffread([basedir2 'masknew.tif']);
+ROI( ROI < 0 ) = 0;
 [m n] = size(ROI);
 
 
@@ -44,16 +63,18 @@ for y=years
     for jj = 1:nn
       for ii = 1:mm
         lcover_grid = zeros(1,4);
-        i = xIndex(:, ii);
-        j = yIndex(:, jj);
-        burntArea_grid = burntArea(i(1):i(2), j(1):j(2));
-        landCover_grid = landCover(i(1):i(2), j(1):j(2));
-        ROI_grid = ROI(i(1):i(2), j(1):j(2));
-        x = [];
-        for class = 1:4
-          lcover_grid(class) = numel(find(landCover_grid((burntArea_grid > 0) & ROI_grid) == class));
+        if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
+            i = xIndex(:, ii);
+            j = yIndex(:, jj);
+            burntArea_grid = burntArea(i(1):i(2), j(1):j(2));
+            landCover_grid = landCover(i(1):i(2), j(1):j(2));
+            ROI_grid = ROI(i(1):i(2), j(1):j(2));
+            x = [];
+            for class = 1:4
+              lcover_grid(class) = numel(find(landCover_grid((burntArea_grid > 0) & ROI_grid) == class));
+            end
+            lcover_yearly(:, :, i(1), j(1)) = lcover_yearly(:, :, i(1), j(1)) + lcover_grid;
         end
-        lcover_yearly(:, :, i(1), j(1)) = lcover_yearly(:, :, i(1), j(1)) + lcover_grid;
       end
     end
   end
@@ -94,10 +115,10 @@ fprintf('Start writing output!\n');
 % pctg = uint16(pctg);
 % pctc = uint16(pctc);
 
-filename1 = [outputFolder 'percentage_forest_affected.tif'];
-filename2 = [outputFolder 'percentage_savanna_affected.tif'];
-filename3 = [outputFolder 'percentage_grassland_affected.tif'];
-filename4 = [outputFolder 'percentage_cropland_affected.tif'];
+filename1 = [outputfolder 'percentage_forest_affected.tif'];
+filename2 = [outputfolder 'percentage_savanna_affected.tif'];
+filename3 = [outputfolder 'percentage_grassland_affected.tif'];
+filename4 = [outputfolder 'percentage_cropland_affected.tif'];
 
 geotiffwrite(filename1, pctf, outputref);
 geotiffwrite(filename2, pctsa, outputref);
