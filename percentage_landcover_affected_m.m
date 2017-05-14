@@ -63,18 +63,16 @@ for y=years
     for jj = 1:nn
       for ii = 1:mm
         lcover_grid = zeros(1,4);
-        if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
-            i = xIndex(:, ii);
-            j = yIndex(:, jj);
-            burntArea_grid = burntArea(i(1):i(2), j(1):j(2));
-            landCover_grid = landCover(i(1):i(2), j(1):j(2));
-            ROI_grid = ROI(i(1):i(2), j(1):j(2));
-            x = [];
-            for class = 1:4
-              lcover_grid(class) = numel(find(landCover_grid((burntArea_grid > 0) & ROI_grid) == class));
-            end
-            lcover_yearly(:, :, i(1), j(1)) = lcover_yearly(:, :, i(1), j(1)) + lcover_grid;
+        i = xIndex(:, ii);
+        j = yIndex(:, jj);
+        burntArea_grid = burntArea(i(1):i(2), j(1):j(2));
+        landCover_grid = landCover(i(1):i(2), j(1):j(2));
+        ROI_grid = ROI(i(1):i(2), j(1):j(2));
+        x = [];
+        for class = 1:4
+          lcover_grid(class) = numel(find(landCover_grid((burntArea_grid > 0) & ROI_grid) == class));
         end
+        lcover_yearly(:, :, i(1), j(1)) = lcover_yearly(:, :, i(1), j(1)) + lcover_grid;
       end
     end
   end

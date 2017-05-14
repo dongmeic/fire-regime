@@ -67,18 +67,16 @@ for idx = 1:length(years)
     %% map(map == Nodata) = 0; 
     for jj = 1:nn
       for ii = 1:mm
-        if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
-          i = xIndex(:, ii);
-          j = yIndex(:, jj);
-          map_grid = map(i(1):i(2), j(1):j(2));
-          ROI_grid = ROI(i(1):i(2), j(1):j(2));
-          map_grid(ROI_grid == 0) = 0;
-          if sum(sum(map_grid > 0))>0
-              burnPixel_m(ii, jj, jdx) = sum(sum(map_grid > 0));
-          end
-          % gridSize_m(ii, jj, jdx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
-          gridSize(ii, jj, idx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
+        i = xIndex(:, ii);
+        j = yIndex(:, jj);
+        map_grid = map(i(1):i(2), j(1):j(2));
+        ROI_grid = ROI(i(1):i(2), j(1):j(2));
+        map_grid(ROI_grid == 0) = 0;
+        if sum(sum(map_grid > 0))>0
+            burnPixel_m(ii, jj, jdx) = sum(sum(map_grid > 0));
         end
+        % gridSize_m(ii, jj, jdx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
+        gridSize(ii, jj, idx) = (i(2)-i(1)+1)*(j(2)-j(1)+1);
       end
     end
   end

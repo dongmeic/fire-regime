@@ -52,15 +52,13 @@ for idx = 1:length(years)
 		frp = cell(mm, nn);
 		for jj = 1:nn
 			for ii = 1:mm
-        if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
-          i = xIndex(:, ii);
-          j = yIndex(:, jj);
-          map_grid = map(i(1):i(2), j(1):j(2));
-          ROI_grid = ROI(i(1):i(2), j(1):j(2));
-          map_grid(ROI_grid == 0) = 0;
-          frp{ii, jj} = map_grid(map_grid > 0);
-          frp_all{ii,jj} = [frp_all{ii,jj};frp{ii, jj}];
-        end
+        i = xIndex(:, ii);
+        j = yIndex(:, jj);
+        map_grid = map(i(1):i(2), j(1):j(2));
+        ROI_grid = ROI(i(1):i(2), j(1):j(2));
+        map_grid(ROI_grid == 0) = 0;
+        frp{ii, jj} = map_grid(map_grid > 0);
+        frp_all{ii,jj} = [frp_all{ii,jj};frp{ii, jj}];
 			end
 		end
 	end

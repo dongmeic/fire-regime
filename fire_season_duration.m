@@ -55,22 +55,20 @@ for y=years
     map = geotiffread([basedir 'BA_China_' num2str(y) '-' num2str(v) '.tif']);
     for jj = 1:nn
       for ii = 1:mm
-          if (ii>0 && jj>0 && ii<=m && jj <=n) && ROI(ii,jj) == 1
-            i = xIndex(:, ii);
-            j = yIndex(:, jj);
-            dayshist= zeros(1, 366);
-            map_grid = map(i(1):i(2), j(1):j(2));
-            ROI_grid = ROI(i(1):i(2), j(1):j(2));
-            [I J] = find((map_grid > 0) & ROI_grid);
-            len = length(I);
-            for k = 1:len
-              a = I(k);
-              b = J(k);
-              day = map_grid(a, b);
-              dayshist(day) = dayshist(day) + 1;
-            end
-            dayshist_all(:, :, ii, jj) = dayshist_all(:, :, ii, jj) + dayshist; 
-        end
+          i = xIndex(:, ii);
+          j = yIndex(:, jj);
+          dayshist= zeros(1, 366);
+          map_grid = map(i(1):i(2), j(1):j(2));
+          ROI_grid = ROI(i(1):i(2), j(1):j(2));
+          [I J] = find((map_grid > 0) & ROI_grid);
+          len = length(I);
+          for k = 1:len
+            a = I(k);
+            b = J(k);
+            day = map_grid(a, b);
+            dayshist(day) = dayshist(day) + 1;
+          end
+          dayshist_all(:, :, ii, jj) = dayshist_all(:, :, ii, jj) + dayshist; 
       end
     end
   end
