@@ -1,0 +1,16 @@
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2001
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2002
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2003
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_2.sh 2004
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2005
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2006
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2007
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_2.sh 2008
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2009
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2010
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2011
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_2.sh 2012
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2013
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2014
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_1.sh 2015
+. /Users/dongmei/GitHub/fire-regime/MCD64A1_2.sh 2016

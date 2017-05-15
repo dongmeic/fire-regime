@@ -6,12 +6,29 @@ tic
 %% Description:
 %% Created by: Dongmei CHEN, 2017.05.05
 
-basedir = '/home2/dongmeic/fire/output/AF_China/';
-outputfolder = '/home2/dongmeic/fire/output/results/';
+% working in different computers without having to manually change the paths
+if isequal( getenv('UserName') , 'Andrea' )
+  basedir = '';
+  basedir2 = '';
+  outputfolder = 'results/';
+else
+  [~,computer_name]=system('hostname');
+  if length(computer_name)>=20 && isequal( computer_name(1:20), 'd136-228.uoregon.edu' )
+    basedir = '/Volumes/dongmeichen/output/AF_China/';
+    basedir2 = '/Volumes/dongmeichen/';
+    outputfolder = '/Volumes/dongmeichen/output/results/';
+  else
+    basedir = '/home2/dongmeic/fire/output/AF_China/';
+    basedir2 = '/home2/dongmeic/fire/';
+    outputfolder = '/home2/dongmeic/fire/output/results/';
+  end
+end
 
 years = 2001:2015;
 months=1:12;
-[ROI ref] = geotiffread([basedir 'mask.tif']);
+
+[ROI ref] = geotiffread([basedir2 'masknew.tif']);
+ROI( ROI < 0 ) = 0;
 [m n] = size(ROI);
 
 xIndex = [[1:100:m]; [1:100:m]+99];
@@ -35,13 +52,13 @@ for idx = 1:length(years)
 		frp = cell(mm, nn);
 		for jj = 1:nn
 			for ii = 1:mm
-			  i = xIndex(:, ii);
-			  j = yIndex(:, jj);
-			  map_grid = map(i(1):i(2), j(1):j(2));
-			  ROI_grid = ROI(i(1):i(2), j(1):j(2));
-			  map_grid(ROI_grid == 0) = 0;
-			  frp{ii, jj} = map_grid(map_grid > 0);
-			  frp_all{ii,jj} = [frp_all{ii,jj};frp{ii, jj}];
+        i = xIndex(:, ii);
+        j = yIndex(:, jj);
+        map_grid = map(i(1):i(2), j(1):j(2));
+        ROI_grid = ROI(i(1):i(2), j(1):j(2));
+        map_grid(ROI_grid == 0) = 0;
+        frp{ii, jj} = map_grid(map_grid > 0);
+        frp_all{ii,jj} = [frp_all{ii,jj};frp{ii, jj}];
 			end
 		end
 	end
