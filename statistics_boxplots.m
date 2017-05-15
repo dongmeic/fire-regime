@@ -8,7 +8,7 @@ tic
 %% Description:
 %% Created by:
 
-basedir = '/Volumes/dongmeic/fire/output/revision/results/';
+basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
 % basedir = 'variables/';
 
 %% File names.
@@ -77,7 +77,7 @@ for k = 1:len
   map = geotiffread([basedir filenames{k}]);
   map2=double(map);
   subplot(3,4,k,'replace');
-  boxplot(map2(map2 > 0),'labels',[num2str(k) '-' labels{k}]);
+  boxplot(map2(map2 > 0),'labels',[num2str(k) '-' labels{k}],'OutlierSize',4);
 end
 print([basedir 'clusters/boxplot_variables_' date '.png'],'-dpng','-r500')
 

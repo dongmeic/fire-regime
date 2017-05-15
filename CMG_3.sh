@@ -1,4 +1,4 @@
-# to run year 2001
+# to run year 2002 first half
 
 #!/bin/bash
 
@@ -6,12 +6,14 @@
 Year=$1
 
 DATADIR=/Users/dongmeichen/CMG/hdf
-OUTPUTDIR=/Users/dongmeichen/CMG/output
+OUTPUTDIR=/Users/dongmeichen/CMG/output/CloudCorrFirePix
+#OUTPUTDIR=/Users/dongmeichen/CMG/output/CorrFirePix # 0
 Types=("MOD")
 
 # for every 8 days
 the8daysDoY=()
-for i in $(seq -f "%03g" 1 8 365)
+#for i in $(seq -f "%03g" 1 8 186)
+for i in $(seq -f "%02g" 1 1 6)
 do
 	echo $i
 	# for each type
@@ -19,7 +21,8 @@ do
 	Files=()
 	for type in `seq 0 $NumberOfTypes`
     	do
-		Files+=("`ls $DATADIR/${Types[$type]}14C8H.$Year$i.005.01.hdf`")
+		#Files+=("`ls $DATADIR/${Types[$type]}14C8H.$Year$i.005.01.hdf`")
+		Files+=("`ls $DATADIR/${Types[$type]}14CMH.$Year$i.005.01.hdf`")
 
 	done
 
@@ -29,6 +32,7 @@ do
 	do
 		echo ${Files[$type]}
 		thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"1"
+		#thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"0"
 		gdal_translate -of GTiff $thelayer $OUTPUTDIR/tmp.$type.tif  > /dev/null
 		echo $OUTPUTDIR/tmp.$type.tif
 		layer_files+=("$OUTPUTDIR"/"tmp.$type.tif")

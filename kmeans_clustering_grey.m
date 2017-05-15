@@ -2,7 +2,7 @@ close all; clear; clc;
 
 tic
 
-savemyresults = false;
+savemyresults = true;
 
 %%% kmeans_clustering.m : clustering by applying kmeans
 %% Input: spatial,temporal and intensity attributes of fire regimes
@@ -11,7 +11,7 @@ savemyresults = false;
 %% Created by: Peng LIN
 %% Modified by: Dongmei CHEN, Andrea MASIERO
 
-basedir = '/Volumes/dongmeic/fire/output/revision/results/';
+basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
 
 %% Pre-defined values.
 nCluster = 6; % decided by 'elbow' method
@@ -131,7 +131,7 @@ switch type_of_normalization
 end
   
 
-if 1
+if 0
 	%look at the histogram of normalized data
 	for i = 1:len
 		figure(132)
@@ -261,12 +261,12 @@ end
 [idx,regime_classes_centers,sumd,D] = kmeans(XX', nCluster,'MaxIter',1000,'Display','final','Replicates',100);
 % colors = hot(30);
 % mycolors = colors(3:3:end,:);
-mycolors = [0.596 0.306 0.639;
-    1 1 0.2;
-    0.302 0.686 0.29;
-    1 0.498 0;
-    0.894 0.102 0.11;
-    0.216 0.494 0.722];
+mycolors = [0.894 0.102 0.11; % red
+  0.216 0.494 0.722; % blue
+  0.302 0.686 0.29; % green
+  0.596 0.306 0.639; % purple
+  1 0.498 0; % orange
+  1 1 0.2] % yellow 
 % print a table to see the variable value range in all clusters
 k=nCluster;
 if savemyresults
@@ -299,11 +299,11 @@ if savemyresults
     figure('Units','normalized')
     for i=1:len  % len = 12
         subplot(3,4,i,'replace'); %,'labels',i
-        boxplot(X(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5);
+        boxplot(X(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
         h = findobj(gca,'tag','Median');
         set(h,'linestyle','-.');
         set(h,'Color',[0 0 0])
-        xlabel([num2str(i) '-' labels{i}],'FontSize', 12, 'FontWeight', 'Bold');
+        xlabel([num2str(i) '-' labels{i}],'FontSize', 10, 'FontWeight', 'Bold');
 %         h = findobj(gca,'Tag','Box');
 %         for j=1:length(h)
 %             patch(get(h(j),'XData'),get(h(j),'YData'),'y','FaceAlpha',.5);
@@ -387,7 +387,7 @@ switch use_color_image
 end
 
 
-if savemyresults
+if 1
 	% run this instruction if you want to save figure 135
 	% as tiff image
 	% saveas(gcf,[basedir 'clusters/regime.png'],'png');
@@ -462,7 +462,7 @@ for i = 1:nCluster
     s2 = 6;
     imshow(imenlarger(I, s2))
 %     imshow(I)
-    if savemyresults
+    if 1
        regime = I; %* 255;
        geotiffwrite([basedir 'clusters/regime_' num2str(i) '.tif'], regime, ref);
     end  
@@ -481,7 +481,8 @@ end
 %insert other colors if you consider more than 4 clusters
 %mycolors2 = {'m','r','b', 'g', 'c','y','k'}; %% the colors are showed exactly same as figure 135? I meant the corresponding color in each cluster (I guess so)
 markers = {'o','s','+','x','d','*','v','h','^','p'};
-type_of_imshow = 1; 
+type_of_imshow = 1;
+use_color_image = 1;
 switch type_of_imshow
   case 1 %2D
     figure(136)
@@ -490,6 +491,25 @@ switch type_of_imshow
 %       plot(XX(1,idx==i),XX(2,idx==i),[mycolors2{i} 'x'],'LineWidth', 2,'MarkerSize', 8)
 %      plot(XX(1,idx==i),XX(2,idx==i),[mycolors2{i} markers{i}],'LineWidth', 2,'MarkerSize', 8)
         h=plot(XX(1,idx==i),XX(2,idx==i),[markers{i}],'LineWidth', 2,'MarkerSize', 8);
+        switch use_color_image
+		case 0
+			I = zeros(m,n);
+			I(myind(idx==i)) = 1;
+		case 1
+			I(:,:,1) = ones(m,n);%if you want black background use zeros intead of ones
+			I(:,:,2) = ones(m,n);%if you want black background use zeros intead of ones
+			I(:,:,3) = ones(m,n);%if you want black background use zeros intead of ones
+			
+			Itmp = I(:,:,1);
+			Itmp(myind(idx==i)) = mycolors(i,1);
+			I(:,:,1) = Itmp;
+			Itmp = I(:,:,2);
+			Itmp(myind(idx==i)) = mycolors(i,2);
+			I(:,:,2) = Itmp;
+			Itmp = I(:,:,3);
+			Itmp(myind(idx==i)) = mycolors(i,3);
+			I(:,:,3) = Itmp;                      
+        end
         if use_color_image == 1
             set(h,'color', mycolors(i,:));
         else

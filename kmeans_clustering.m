@@ -11,7 +11,7 @@ savemyresults = true;
 %% Created by: Peng LIN
 %% Modified by: Dongmei CHEN, Andrea MASIERO
 
-basedir = '/Volumes/dongmeic/fire/output/revision/results/';
+basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
 
 %% Pre-defined values.
 nCluster = 6; % decided by 'elbow' method
@@ -261,12 +261,12 @@ end
 [idx,regime_classes_centers,sumd,D] = kmeans(XX', nCluster,'MaxIter',1000,'Display','final','Replicates',100);
 % colors = hot(30);
 % mycolors = colors(3:3:end,:);
-mycolors = [0.596 0.306 0.639;
-    1 1 0.2;
-    0.302 0.686 0.29;
-    1 0.498 0;
-    0.894 0.102 0.11;
-    0.216 0.494 0.722];
+mycolors = [0.894 0.102 0.11; % red
+  0.216 0.494 0.722; % blue
+  0.302 0.686 0.29; % green
+  0.596 0.306 0.639; % purple
+  1 0.498 0; % orange
+  1 1 0.2] % yellow 
 % print a table to see the variable value range in all clusters
 k=nCluster;
 if savemyresults
@@ -299,11 +299,11 @@ if savemyresults
     figure('Units','normalized')
     for i=1:len  % len = 12
         subplot(3,4,i,'replace'); %,'labels',i
-        boxplot(X(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5);
+        boxplot(X(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
         h = findobj(gca,'tag','Median');
         set(h,'linestyle','-.');
         set(h,'Color',[0 0 0])
-        xlabel([num2str(i) '-' labels{i}],'FontSize', 12, 'FontWeight', 'Bold');
+        xlabel([num2str(i) '-' labels{i}],'FontSize', 10, 'FontWeight', 'Bold');
 %         h = findobj(gca,'Tag','Box');
 %         for j=1:length(h)
 %             patch(get(h(j),'XData'),get(h(j),'YData'),'y','FaceAlpha',.5);
