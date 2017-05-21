@@ -8,13 +8,14 @@ library(latticeExtra)
 library(gridExtra)
 library(grid)
 
-setwd("/Volumes/dongmeic-10/fire/revision/maps")
-infolder <- "/Volumes/dongmeic-10/fire/output/revision/results/"
-outfolder <- "/Volumes/dongmeic-10/fire/revision/maps/"
+setwd("/Volumes/dongmeic/fire/revision/maps")
+infolder <- "/Volumes/dongmeic/fire/output/revision/results/"
+outfolder <- "/Volumes/dongmeic/fire/revision/maps/"
 ch.aea <- CRS("+proj=aea +lat_1=25 +lat_2=47 +lat_0=30 +lon_0=105 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-pro.shpfile <- "/Volumes/dongmeic-10/fire/mapchina/China_province_re.shp"
+pro.shpfile <- "/Volumes/dongmeic/fire/mapchina/China_province_re.shp"
 pro.shp <- readShapePoly(pro.shpfile, proj4string = ch.aea)
 ch.pro <- spTransform(pro.shp, CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+# writeOGR(obj=ch.pro, dsn="/Volumes/dongmeic/fire", layer="China_pro_wgs84", driver="ESRI Shapefile", overwrite_layer = T)
 # color <- 'YlOrRd'
 
 ## setting for reprojection
@@ -22,7 +23,7 @@ ch.pro <- spTransform(pro.shp, CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=W
 #               offset = c(2100000, 500000), scale = 550000)
 # scale <- list("SpatialPolygonsRescale", layout.scale.bar(height = 0.15), 
 #                offset = c(-2200000, -1100000), scale = 600000, fill=c("transparent","black"))
-# text <- list("sp.text", c(-1900000, -810000), "550 km", cex=1.2)
+# text <- list("sp.text", c(-1900000, -810000), "600 km", cex=1.2)
 
 ## setting for WGS84
 scale <- list("SpatialPolygonsRescale", layout.scale.bar(height = 0.15), 
@@ -41,13 +42,12 @@ filenames <- c('mean_annual_number_of_fires.tif','mean_annual_active_fire.tif',
               'Gini_index.tif', 'percentage_forest_affected.tif', 
               'percentage_savanna_affected.tif', 'percentage_grassland_affected.tif', 
               'percentage_cropland_affected.tif')
-names0 <- c('Mean Annual Number of Fires','Mean Annual active Fire Density',
+names0 <- c('Mean Annual Number of Fires', 'Mean Annual active Fire Density',
             'CV in Number of Fires', 'CV in active Fire Density', 
-           'Fire Season Duration', 'Fire Peak Month', 'Fire Radiative Power', 
-           'Gini Index', 'Percent Forest Affected', 'Percent Savanna Affected', 
-           'Percent Grassland Affected', 'Percent Cropland Affected')
+           'Fire Season Duration (days)', 'Fire Peak Month', 'Fire Radiative Power', 
+           'Gini Index', 'Percent Forests Affected (%)', 'Percent Savannas Affected (%)', 
+           'Percent Grasslands Affected (%)', 'Percent Croplands Affected (%)')
 #names1 <- c('MANF', 'MAFD', 'CVNF', 'CVFD', 'FSD', 'FPM', 'FRP', 'GI', 'PFA', 'PSA', 'PGA', 'PCA')
-#rgtypes <-c('LHLHHf', 'LLLLLfc', 'LHMHHg', 'HLHLLfs', 'HLMLHc', 'LLLHLg')
 
 rstack <- stack()
 for (i in 1:length(filenames)){
@@ -87,13 +87,19 @@ for (i in seq(1, 12, by=4)){
   layer2 <- subset(rstack, i+1); layer2[layer2 <= 0] <- NA
   layer3 <- subset(rstack, i+2); layer3[layer3 <= 0] <- NA
   layer4 <- subset(rstack, i+3); layer4[layer4 <= 0] <- NA
-  p1 <- levelplot(layer1, at=getJenksBreaks(na.omit(getValues(layer1)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[1],names0[i]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
-  if (i == 5){
+  if (i == 1){
+    p1 <- levelplot(layer1, at=getJenksBreaks(na.omit(getValues(layer1)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=expression(bold('a. Mean Annual Number of Fires (fires·yr'^-1*')')))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+    p2 <- levelplot(layer2, at=getJenksBreaks(na.omit(getValues(layer2)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=expression(bold('b. Mean Annual active Fire Density (pixels·yr'^-1*')')))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+    p3 <- levelplot(layer3, at=getJenksBreaks(na.omit(getValues(layer3)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[3],names0[i+2]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+  }else if (i==5){
+    p1 <- levelplot(layer1, at=getJenksBreaks(na.omit(getValues(layer1)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[1],names0[i]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
     p2 <- levelplot(layer2, at=seq(1,12,by=1), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[2],names0[i+1]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+    p3 <- levelplot(layer3, at=getJenksBreaks(na.omit(getValues(layer3)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=expression(bold('c. Fire Radiative Power (mW/m'^2*')')))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
   }else{
-    p2 <- levelplot(layer2, at=getJenksBreaks(na.omit(getValues(layer2)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[2],names0[i+1]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray')) 
+    p1 <- levelplot(layer1, at=getJenksBreaks(na.omit(getValues(layer1)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[1],names0[i]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+    p2 <- levelplot(layer2, at=getJenksBreaks(na.omit(getValues(layer2)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[2],names0[i+1]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
+    p3 <- levelplot(layer3, at=getJenksBreaks(na.omit(getValues(layer3)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[3],names0[i+2]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
   }
-  p3 <- levelplot(layer3, at=getJenksBreaks(na.omit(getValues(layer3)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[3],names0[i+2]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
   p4 <- levelplot(layer4, at=getJenksBreaks(na.omit(getValues(layer4)), 6), scales=list(draw=FALSE), margin=F, par.settings=mapTheme, main=paste(text[4],names0[i+3]))+latticeExtra::layer(sp.polygons(ch.pro, lwd=0.8, col='gray'))
   png(paste(outfolder, "variable_map_", i, ".png", sep=""), width=12, height=8, units="in", res=300)
   grid.arrange(p1, p2, p3, p4, ncol=2)
@@ -102,7 +108,7 @@ for (i in seq(1, 12, by=4)){
 }
 
 # map fire regimes
-inpath <- "/Volumes/dongmeic-10/fire/revision/maps/"
+inpath <- "/Volumes/dongmeic/fire/revision/maps/"
 # regimes <- stack(paste(inpath, "regime_14-May-2017.tif", sep=""))
 # regimes <- projectRaster(regimes, method="ngb", crs=ch.aea, alignOnly=T)
 # plotRGB(regimes, r = 1, g = 2, b = 3, stretch="lin", addfun=fun)
@@ -168,6 +174,7 @@ read.raster <- function(r.file){
   return(r)
   #plot(r)
 }
+rgtypes <-c('LLLLLfc', 'LHLHLg', 'HLHHHfs', 'HLMLHc', 'LHLHHf', 'LLLLLg')
 regime1 <- read.raster("regime_1.tif")
 p1 <- spplot(regime1, draw = T, col.regions=mycolors2[1], colorkey=FALSE, main=paste("Fire regime 1:", rgtypes[1]),
             scales=list(draw=F), sp.layout=list(bound))
@@ -198,24 +205,31 @@ p6 <- spplot(regime6, draw = T, col.regions=mycolors2[6], colorkey=FALSE, main=p
              scales=list(draw=F), sp.layout=list(bound))
 plot(p6)
 
-rgtypes <-c('LLLLLfc', 'LHMHHg', 'HLHLLfs', 'HLMLHc', 'LHLHHf', 'LLLHLg')
 png("fire_regimes_all.png", width=10, height=6, units="in", res=300)
 grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3)
 dev.off()
 
 # make a map of China - better do it in ArcMap
-mtains <- readShapeSpatial("/Volumes/dongmeic-10/fire/revision/mountains.shp")
+mtains <- readShapeSpatial("/Volumes/dongmeic/fire/revision/mountains.shp")
 proj4string(mtains) <- CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-LC.China <- raster("/Volumes/dongmeic-10/fire/output/revision/LC_China/reclass/LC_China_recl_2013.tif")
-mask <- raster("/Volumes/dongmeic-10/fire/masknew.tif")
+mount <- list("sp.lines", mtains, col="brown", lwd=2, first = FALSE)
+LC.China <- raster("/Volumes/dongmeic/fire/output/revision/LC_China/reclass/LC_China_recl_2013.tif")
+mask <- raster("/Volumes/dongmeic/fire/masknew.tif")
 LC.China <- mask(LC.China, mask)
 LC.China[LC.China==0] <- NA
 mykey.1 <- list(text=list(lab=c("Forests", "Savannas", "Grasslands", "Croplands"), cex=c(1.2,1.2,1.2,1.2,1.2,1.2,1.2)), 
               rectangles=list(col=terrain.colors(4)), space="inside", width=0.2, columns=1)
-
-png("land_cover.png", width=9, height=6, units="in", res=300)
+text1 <- list("sp.text", c(86.5, 43.3), "Tianshan", cex=1.1)
+text2 <- list("sp.text", c(84, 49), "Altai Mountains", cex=1.1)
+text3 <- list("sp.text", c(125, 42), "Changbai Mountains", cex=1.1)
+text4 <- list("sp.text", c(109.8, 34), "Qin Mountains", cex=1.1)
+text5 <- list("sp.text", c(99, 27.5), "Hengduan Mountains", cex=1.1)
+text6 <- list("sp.text", c(121, 49), "Da Xing'an Mountains", cex=1.1)
+text7 <- list("sp.text", c(127, 46), "Xiao Xing'an Mountains", cex=1.1)
+png("land_cover.png", width=8, height=6, units="in", res=300)
+par(xpd=FALSE,mfrow=c(1,1),mar=c(0,0,0,0))
 p.1 <- spplot(LC.China, draw = T, col.regions= terrain.colors(4, alpha = 1), colorkey=FALSE, key=mykey.1, cuts=3,
-             scales=list(draw=F), sp.layout=list(bound,text,scale,arrow))
+             scales=list(draw=F), sp.layout=list(bound,mount,text,text1,text2,text3,text4,text5,text6,text7,scale,arrow))
 names(p.1$legend) <- "inside"
 p.1$legend$inside$x <- 0.37
 p.1$legend$inside$y <- 0.9

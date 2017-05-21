@@ -2,7 +2,7 @@ close all; clear; clc;
 
 tic
 
-savemyresults = true;
+savemyresults = false;
 
 %%% kmeans_clustering.m : clustering by applying kmeans
 %% Input: spatial,temporal and intensity attributes of fire regimes
@@ -387,7 +387,7 @@ switch use_color_image
 end
 
 
-if 1
+if savemyresults
 	% run this instruction if you want to save figure 135
 	% as tiff image
 	% saveas(gcf,[basedir 'clusters/regime.png'],'png');
@@ -462,7 +462,7 @@ for i = 1:nCluster
     s2 = 6;
     imshow(imenlarger(I, s2))
 %     imshow(I)
-    if 1
+    if savemyresults
        regime = I; %* 255;
        geotiffwrite([basedir 'clusters/regime_' num2str(i) '.tif'], regime, ref);
     end  
@@ -547,7 +547,7 @@ if savemyresults
 end
 
 %% One-way multivariate analysis of variance to test significance
-if 1
+if savemyresults
   for i=1:length(idx)
     group{i}=num2str(idx(i));
   end

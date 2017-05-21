@@ -5,7 +5,8 @@
 Year=$1
 
 DATADIR=/Users/dongmeichen/CMG/hdf
-OUTPUTDIR=/Users/dongmeichen/CMG/output/CloudCorrFirePix
+OUTPUTDIR=/Users/dongmeichen/CMG/output/MeanCloudFraction
+#OUTPUTDIR=/Users/dongmeichen/CMG/output/CloudCorrFirePix
 #OUTPUTDIR=/Users/dongmeichen/CMG/output/CorrFirePix # 0
 
 #DATADIR=/home2/dongmeic/fire/data/cmg
@@ -34,7 +35,8 @@ do
 	for type in `seq 0 $NumberOfTypes`
 	do
 		echo ${Files[$type]}
-		thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"1"
+		thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"2"
+		#thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"1"
 		#thelayer="HDF4_SDS:UNKNOWN:"${Files[$type]}:"0"
 		gdal_translate -of GTiff $thelayer $OUTPUTDIR/tmp.$type.tif  > /dev/null
 		echo $OUTPUTDIR/tmp.$type.tif

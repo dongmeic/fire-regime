@@ -29,7 +29,8 @@ end
 
 %% Nodata = 32767;
 
-years = 2001:2016;
+%%years = 2001:2016;
+years = 2003:2013;
 months = 1:12;
 
 %% Map size and reference system
@@ -102,11 +103,11 @@ for jj = 1:nn
 end
 
 %afpct = uint16(afpct);
-filename1 = [outputfolder 'mean_annual_area_burned.tif'];
+filename1 = [outputfolder 'mean_annual_area_burned_10.tif'];
 geotiffwrite(filename1, afmean, outputref);
-filename2 = [outputfolder 'mean_annual_area_burned_cv.tif'];
+filename2 = [outputfolder 'mean_annual_area_burned_cv_10.tif'];
 geotiffwrite(filename2, afcv, outputref);
-filename3 = [outputfolder 'pixels_burned_percentage_BA.tif'];
+filename3 = [outputfolder 'pixels_burned_percentage_BA_10.tif'];
 geotiffwrite(filename3, afpct, outputref);
 
 toc
