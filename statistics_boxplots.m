@@ -8,17 +8,17 @@ tic
 %% Description:
 %% Created by:
 
-basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
+basedir = '/Volumes/dongmeic/fire/output/revision/results/';
 % basedir = 'variables/';
 
 %% File names.
 filenames = {
-	     'mean_annual_number_of_fires.tif'; 
-         	    %'mean_annual_area_burned.tif'; 
-	     %'mean_annual_area_burned_cv.tif'; 
+	     %'mean_annual_number_of_fires.tif'; 
+         	    'mean_annual_area_burned.tif'; 
                       %'maximum_fire_size.tif';
           'mean_annual_active_fire.tif';
-          'mean_annual_number_of_fires_cv.tif'; 
+          %'mean_annual_number_of_fires_cv.tif';
+          'mean_annual_area_burned_cv.tif'; 
 	     'mean_annual_active_fire_cv.tif'; 
 	     'fire_season_duration.tif'; 
          %'length_of_fire_period.tif';
@@ -38,12 +38,12 @@ filenames = {
 }
 
 file_name = {
-	     'mean annual number of fires';
-         %'mean annual burned area';
-	     %'CV of annual burned area';
+	     %'mean annual number of fires';
+         'mean annual burned area';
                 %'maximum fire size';
           'mean annual active fire';
-         'CV of annual number of fires';
+         %'CV of annual number of fires';
+         'CV of annual burned area';
 	     'CV of annual active fire';
 	     'fire season duration';
          %'length of fire period';
@@ -55,10 +55,10 @@ file_name = {
 	     'percentage savanna affected';
 	     'percentage grassland affected';
 	     'percentage cropland affected';	     
-};
+}
 
-labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
-
+%labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+labels = {'MAAB'; 'MAFD'; 'CVAB'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
 [map ref] = geotiffread([basedir filenames{1}]);
 [m n] = size(map);
 len = length(filenames);

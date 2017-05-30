@@ -2,7 +2,7 @@ close all; clear; clc;
 
 tic
 
-savemyresults = false;
+savemyresults = true;
 
 %%% kmeans_clustering.m : clustering by applying kmeans
 %% Input: spatial,temporal and intensity attributes of fire regimes
@@ -11,19 +11,25 @@ savemyresults = false;
 %% Created by: Peng LIN
 %% Modified by: Dongmei CHEN, Andrea MASIERO
 
-basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
+if isequal( getenv('UserName') , 'Andrea' )
+	basedir = 'variable_maps/';
+	outputfolder = 'clustering_results/';
+else
+	basedir = '/Volumes/dongmeic-16/fire/output/revision/results/';
+	%basedir = '/Volumes/dongmeic/fire/output/revision/results/';
+end
 
 %% Pre-defined values.
 nCluster = 6; % decided by 'elbow' method
 nPCA = 12; % without PCA
 %% File names.
 filenames = {
-	     'mean_annual_number_of_fires.tif'; 
-         	    %'mean_annual_area_burned.tif'; 
-	     %'mean_annual_area_burned_cv.tif'; 
+	     %'mean_annual_number_of_fires.tif'; 
+         	    'mean_annual_area_burned.tif'; 
                       %'maximum_fire_size.tif';
           'mean_annual_active_fire.tif';
-          'mean_annual_number_of_fires_cv.tif'; 
+          %'mean_annual_number_of_fires_cv.tif';
+          'mean_annual_area_burned_cv.tif'; 
 	     'mean_annual_active_fire_cv.tif'; 
 	     'fire_season_duration.tif'; 
          %'length_of_fire_period.tif';
@@ -43,12 +49,12 @@ filenames = {
 }
 
 file_name = {
-	     'mean annual number of fires';
-         %'mean annual burned area';
-	     %'CV of annual burned area';
+	     %'mean annual number of fires';
+         'mean annual burned area';
                 %'maximum fire size';
           'mean annual active fire';
-         'CV of annual number of fires';
+         %'CV of annual number of fires';
+         'CV of annual burned area';
 	     'CV of annual active fire';
 	     'fire season duration';
          %'length of fire period';
@@ -99,7 +105,7 @@ ind = all( X(:,:)==-1, 2 );
 X = X( ~ind , : );
 ind = ~ind;
 
-
+X0 = X;
 %% rescale the data
 % logarithm
 % X = log(1+X);
@@ -294,7 +300,8 @@ if savemyresults
     saveas(gcf,[basedir 'clusters/sihouettev' date '.png'],'png');
 end
 
-labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+%labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+labels = {'MAAB'; 'MAFD'; 'CVAB'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
 if savemyresults
     figure('Units','normalized')
     for i=1:len  % len = 12
@@ -311,10 +318,111 @@ if savemyresults
         % boxplot(X(idx==1,6)', 'orientation','horizontal','colors',mycolors(1,:));
     end
     
-    if savemyresults
-      saveas(gcf,[basedir 'clusters/boxplot_cluster_variable' date '.png'],'png');
-    end    
-    
+    saveas(gcf,[basedir 'clusters/boxplot_cluster_variable_01' date '.png'],'png');   
+ 
+    %% boxplot with non-normalized data
+% 	figure
+% 	for i=1:len  % len = 12
+% 		subplot(3,4,i,'replace'); %,'labels',i
+% 		boxplot(X0(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+% 		h = findobj(gca,'tag','Median');
+% 		set(h,'linestyle','-.');
+% 		set(h,'Color',[0 0 0])
+% 		if i==7
+% 			% the following instruction forces to show only values between
+% 			% 0 and 180 for the x-axis of FRP plot, indepently of their
+% 			% real range
+% 			axis([0 180 0 7])
+% 		end
+% 		xlabel([num2str(i) '-' labels{i}],'FontSize', 10, 'FontWeight', 'Bold');
+% 	end
+% 	saveas(gcf,[basedir 'clusters/boxplot_cluster_variable' date '.png'],'png');
+% 
+% 	% alternatively, plot the log values for FRP
+	%labels0 = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'log(FRP)'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+    labels0 = {'log(MAAB)'; 'log(MAFD)'; 'CVAB'; 'CVFD'; 'FSD'; 'FPM'; 'log(FRP)'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+% 	figure
+% 	for i=1:len  % len = 12
+% 		subplot(3,4,i,'replace'); %,'labels',i
+% 		if i==1 | i==2 | i==7
+% 			boxplot(log(X0(:,i)), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+% 		else
+% 			boxplot(X0(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+%         end
+%         switch i
+% 			case 3
+% 				axis([0 4 0 7])
+% 			case 4
+% 				axis([0 4 0 7])
+% 			case 8
+% 				axis([0 1 0 7])
+% 			case 5
+% 				axis([1 375 0 7])
+% 		end
+% 		h = findobj(gca,'tag','Median');
+% 		set(h,'linestyle','-.');
+% 		set(h,'Color',[0 0 0])
+% 		xlabel([num2str(i) '-' labels0{i}],'FontSize', 10, 'FontWeight', 'Bold');
+% 	end
+% 	saveas(gcf,[basedir 'clusters/boxplot_cluster_variable_log' date '.png'],'png');
+% end
+
+% reorder the y-axis 
+	idx2 = idx;
+	for i=1:6
+		idx2( idx==i ) = 6-i+1;
+	end
+	figure
+	for i=1:len  % len = 12
+		subplot(3,4,i,'replace'); %,'labels',i
+		if i==1 | i==2 | i==7
+			boxplot(log(X0(:,i)), idx2, 'orientation','horizontal','colors',mycolors(k:-1:1,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+			for j = 1:6
+				mymedian(j,i) = exp( median( log(X0(idx==j,i)) ) );
+				mymedian2(j,i) = median( log(X0(idx==j,i)) );
+			end
+		else
+			boxplot(X0(:,i), idx2, 'orientation','horizontal','colors',mycolors(k:-1:1,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+			for j = 1:6
+				mymedian(j,i) = median( X0(idx==j,i) );
+				mymedian2(j,i) = mymedian(j,i);
+			end
+		end
+		switch i
+			case 3
+				axis([0 4 0 7])
+			case 4
+				axis([0 4 0 7])
+			case 8
+				axis([0 1 0 7])
+			case 5
+				%axis([1 375 0 7])
+		end
+		h = findobj(gca,'tag','Median');
+		set(h,'linestyle','-.');
+		set(h,'Color',[0 0 0])
+		yticklabels({'6','5','4','3','2','1'})
+		xlabel([num2str(i) '-' labels0{i}],'FontSize', 10, 'FontWeight', 'Bold');
+	end
+	saveas(gcf,[basedir 'clusters/boxplot_cluster_variable_log' date '.png'],'png');
+	
+	
+	% show median values for table on fire regime variable levels on the command window
+	mymedian = real( mymedian );
+	mymedian2 = real( mymedian2 );
+	mymedian2( mymedian<0 ) = nan;
+	mymedian( mymedian<0 ) = nan;
+	ii = 0;
+	for i=1:8
+		if i ~= 6
+			ii = ii+1;
+			mystr = [labels{i} char(9)];
+			for j=1:6
+				mystr = [mystr num2str(mymedian(j,i)) char(9) ];
+			end
+			disp(mystr)
+		end
+	end
 end
 
 % if 0

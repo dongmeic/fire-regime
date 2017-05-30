@@ -11,19 +11,26 @@ savemyresults = true;
 %% Created by: Peng LIN
 %% Modified by: Dongmei CHEN, Andrea MASIERO
 
-basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
+
+if isequal( getenv('UserName') , 'Andrea' )
+	basedir = 'variable_maps/';
+	outputfolder = 'clustering_results/';
+else
+	%basedir = '/Volumes/dongmeic-10/fire/output/revision/results/';
+	basedir = '/Volumes/dongmeic/fire/output/revision/results/';
+end
 
 %% Pre-defined values.
 nCluster = 6; % decided by 'elbow' method
 nPCA = 12; % without PCA
 %% File names.
 filenames = {
-	     'mean_annual_number_of_fires.tif'; 
-         	    %'mean_annual_area_burned.tif'; 
-	     %'mean_annual_area_burned_cv.tif'; 
+	     %'mean_annual_number_of_fires.tif'; 
+         	    'mean_annual_area_burned.tif'; 
                       %'maximum_fire_size.tif';
           'mean_annual_active_fire.tif';
-          'mean_annual_number_of_fires_cv.tif'; 
+          %'mean_annual_number_of_fires_cv.tif';
+          'mean_annual_area_burned_cv.tif'; 
 	     'mean_annual_active_fire_cv.tif'; 
 	     'fire_season_duration.tif'; 
          %'length_of_fire_period.tif';
@@ -43,12 +50,12 @@ filenames = {
 }
 
 file_name = {
-	     'mean annual number of fires';
-         %'mean annual burned area';
-	     %'CV of annual burned area';
+	     %'mean annual number of fires';
+         'mean annual burned area';
                 %'maximum fire size';
           'mean annual active fire';
-         'CV of annual number of fires';
+         %'CV of annual number of fires';
+         'CV of annual burned area';
 	     'CV of annual active fire';
 	     'fire season duration';
          %'length of fire period';
@@ -99,6 +106,7 @@ ind = all( X(:,:)==-1, 2 );
 X = X( ~ind , : );
 ind = ~ind;
 
+X0 = X;
 
 %% rescale the data
 % logarithm
@@ -138,7 +146,7 @@ if 1
 		clf
 		hist(X(:,i))
 		if i < len
-			title(['Histgram: ' file_name{i}]) % press any button
+			title(['Histogram: ' file_name{i}]) % press any button
 			pause
 		end
 	end
@@ -149,7 +157,7 @@ if savemyresults
     kcluster = 20;
     wss = zeros(1, kcluster);
     for k = 1:kcluster
-        [idx,C,sumd,D] = kmeans(Xn, k,'MaxIter',1000,'Display','final','Replicates',100);
+        [idx,C,sumd,D] = kmeans(Xn, k,'MaxIter',1000,'Display','off','Replicates',100);
         wss(k) = norm(sumd)^2;
         %wss(k) = sum(sumd);
     end
@@ -294,7 +302,8 @@ if savemyresults
     saveas(gcf,[basedir 'clusters/sihouettev' date '.png'],'png');
 end
 
-labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+%labels = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+labels = {'MAAB'; 'MAFD'; 'CVAB'; 'CVFD'; 'FSD'; 'FPM'; 'FRP'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
 if savemyresults
     figure('Units','normalized')
     for i=1:len  % len = 12
@@ -310,11 +319,47 @@ if savemyresults
 %         end
         % boxplot(X(idx==1,6)', 'orientation','horizontal','colors',mycolors(1,:));
     end
-    
-    if savemyresults
-      saveas(gcf,[basedir 'clusters/boxplot_cluster_variable' date '.png'],'png');
-    end    
-    
+    saveas(gcf,[basedir 'clusters/boxplot_cluster_variable_01' date '.png'],'png');
+
+	
+	
+	
+	%% boxplot with non-normalized data
+	figure
+	for i=1:len  % len = 12
+		subplot(3,4,i,'replace'); %,'labels',i
+		boxplot(X0(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+		h = findobj(gca,'tag','Median');
+		set(h,'linestyle','-.');
+		set(h,'Color',[0 0 0])
+		if i==7
+			% the following instruction forces to show only values between
+			% 0 and 180 for the x-axis of FRP plot, indepently of their
+			% real range
+			axis([0 180 0 7])
+		end
+		xlabel([num2str(i) '-' labels{i}],'FontSize', 10, 'FontWeight', 'Bold');
+	end
+	saveas(gcf,[basedir 'clusters/boxplot_cluster_variable' date '.png'],'png');
+
+	% alternatively, plot the log values for FRP
+	%labels0 = {'MANF'; 'MAFD'; 'CVNF'; 'CVFD'; 'FSD'; 'FPM'; 'log(FRP)'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+    labels0 = {'log(MAAB)'; 'log(MAFD)'; 'CVAB'; 'CVFD'; 'FSD'; 'FPM'; 'log(FRP)'; 'GI'; 'PFA'; 'PSA'; 'PGA'; 'PCA'};
+	figure
+	for i=1:len  % len = 12
+		subplot(3,4,i,'replace'); %,'labels',i
+		if i==1 | i==2 | i==7
+			boxplot(log(X0(:,i)), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+		else
+			boxplot(X0(:,i), idx, 'orientation','horizontal','colors',mycolors(1:k,:),'boxstyle', 'filled', 'widths',1.5, 'OutlierSize',2);
+		end
+		h = findobj(gca,'tag','Median');
+		set(h,'linestyle','-.');
+		set(h,'Color',[0 0 0])
+		xlabel([num2str(i) '-' labels0{i}],'FontSize', 10, 'FontWeight', 'Bold');
+	end
+	saveas(gcf,[basedir 'clusters/boxplot_cluster_variable_log' date '.png'],'png');
+
 end
 
 % if 0
